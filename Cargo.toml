@@ -1,11 +1,11 @@
 [package]
-name = "slab_token"
+name = "slab_typesafe"
 version = "0.1.0"
 authors = ["Vitaly _Vi Shukela <vi0oss@gmail.com>"]
 description = "A wrapper for Slab that provides type-safe tokens instead of usize."
 license = "MIT/Apache-2.0"
-repository = "https://github.com/vi/slab_token"
-documentation = "https://docs.rs/slab_token"
+repository = "https://github.com/vi/slab_typesafe"
+documentation = "https://docs.rs/slab_typesafe"
 
 [dependencies]
 slab = "0.4"
