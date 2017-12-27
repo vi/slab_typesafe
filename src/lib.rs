@@ -4,6 +4,10 @@
 //! preventing you from confusing them with other unrelated `usize`s,
 //! including keys for other Slab instances.
 //!
+//! The protection is shallow, as the tokens implement From<usize> and Into<usize>.
+//! Additionally, entire slab may be converted back and forth between wrapped typesafe
+//! and unwrapped `usize` versions.
+//!
 //! Based on [compactmap::wrapped](https://docs.rs/compactmap/0.3.4/compactmap/wrapped/index.html)
 //!
 //! # Examples
@@ -854,6 +858,32 @@ impl<'a,K:Copy + Into<usize> + From<usize>, V> IndexMut<&'a K> for Slab<K,V> {
         self.inner.index_mut(idx)
     }
 }
+
+impl<K:Into<usize> + From<usize>, V> Slab<K,V> {
+    /// Extract underlying unwrapped map
+    pub fn into_unwrapped(self) -> slab::Slab<V> {
+        self.inner
+    }
+    
+    /// Wrap the slab. You are responsible that it is one with correct keys.
+    pub fn from_unwrapped(s: slab::Slab<V>) -> Self {
+        Slab {
+            inner : s,
+            _pd : Default::default(),
+        }
+    }
+    
+    /// Temporarily use the map without the safety wrapper
+    pub fn unwrapped(&self) -> &slab::Slab<V> {
+        &self.inner
+    }
+    
+    /// Temporarily use the map without the safety wrapper
+    pub fn unwrapped_mut(&mut self) -> &mut slab::Slab<V> {
+        &mut self.inner
+    }
+}
+
 
 /// Create usize-equivalent struct that implements `From<usize>` and `Into<usize>`
 ///
