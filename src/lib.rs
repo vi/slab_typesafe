@@ -887,7 +887,7 @@ impl<K:Into<usize> + From<usize>, V> Slab<K,V> {
 
 /// Create usize-equivalent struct that implements `From<usize>` and `Into<usize>`
 ///
-/// You it as a key K for the wrapped [Slab](struct.Slab.html)
+/// Use it as a key K for the wrapped [Slab](struct.Slab.html)
 ///
 /// ```
 /// #[macro_use] extern crate slab_typesafe;
