@@ -892,18 +892,29 @@ impl<K:Into<usize> + From<usize>, V> Slab<K,V> {
 /// ```
 /// #[macro_use] extern crate slab_typesafe;
 /// declare_slab_token!(MySpecialIndex);
+/// declare_slab_token!(pub MySpecialIndex2);
+/// declare_slab_token!(pub(crate) MySpecialIndex3);
 /// # fn main(){}
 /// ```
 #[macro_export]
 macro_rules! declare_slab_token {
     ($x:ident) => {
+        declare_slab_token!(inner_part () $x);
+    };
+    (pub $x:ident) => {
+        declare_slab_token!(inner_part (pub) $x);
+    };
+    (pub(crate) $x:ident) => {
+        declare_slab_token!(inner_part (pub(crate)) $x);
+    };
+    (inner_part ($($t:tt)*) $x:ident) => {
         #[derive(Copy,Clone,Ord,PartialOrd,Eq,PartialEq,Hash,Debug)]
-        struct $x(usize);
+        $($t)* struct $x(usize);
         impl From<usize> for $x {
             fn from(x:usize) -> Self { $x(x) }
         }
         impl From<$x> for usize {
             fn from(x:$x) -> usize {x.0}
         }
-    }
+    };
 }
