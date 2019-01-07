@@ -856,6 +856,12 @@ impl<'a, K: Copy + Into<usize> + From<usize>, V> IndexMut<&'a K> for Slab<K, V> 
     }
 }
 
+impl<K: Into<usize> + From<usize>, V> Default for Slab<K, V> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<K: Into<usize> + From<usize>, V> Slab<K, V> {
     /// Extract underlying unwrapped map
     pub fn into_unwrapped(self) -> slab::Slab<V> {
