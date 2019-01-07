@@ -15,7 +15,7 @@
 //! Basic storing and retrieval.
 //!
 //! ```
-//! #[macro_use] 
+//! #[macro_use]
 //! extern crate slab_typesafe;
 //! # use slab_typesafe::*;
 //! declare_slab_token!(StringHandle);
@@ -32,11 +32,11 @@
 //! assert_eq!(slab[world], "earth");
 //! # }
 //! ```
-//! 
+//!
 //! Error if you confused the handles
 //!
 //! ```compile_fail
-//! #[macro_use] 
+//! #[macro_use]
 //! extern crate slab_typesafe;
 //! # use slab_typesafe::*;
 //! declare_slab_token!(StringHandle1);
@@ -59,10 +59,10 @@
 
 extern crate slab;
 
-use ::std::marker::PhantomData;
-use ::std::convert::From;
-use ::std::ops::{Index, IndexMut};
-use ::std::fmt;
+use std::convert::From;
+use std::fmt;
+use std::marker::PhantomData;
+use std::ops::{Index, IndexMut};
 
 /// A wrapper for pre-allocated storage for a uniform data type
 ///
@@ -75,7 +75,7 @@ pub struct Slab<K: Into<usize> + From<usize>, V> {
     _pd: PhantomData<K>,
 }
 
-impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
+impl<K: Into<usize> + From<usize>, V> Slab<K, V> {
     /// Construct a new, empty `Slab`.
     ///
     /// The function does not allocate and the returned slab will have no
@@ -97,7 +97,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
             _pd: Default::default(),
         }
     }
-    
+
     /// Construct a new, empty `Slab` with the specified capacity.
     ///
     /// The returned slab will be able to store exactly `capacity` without
@@ -135,7 +135,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
             _pd: Default::default(),
         }
     }
-    
+
     /// Returns the number of values the slab can store without reallocating.
     ///
     /// # Examples
@@ -220,7 +220,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn reserve_exact(&mut self, additional: usize) {
         self.inner.reserve_exact(additional)
     }
-    
+
     /// Shrinks the capacity of the slab as much as possible.
     ///
     /// It will drop down as close as possible to the length but the allocator
@@ -272,7 +272,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn shrink_to_fit(&mut self) {
         self.inner.shrink_to_fit()
     }
-    
+
     /// Clear the slab of all values
     ///
     /// ```
@@ -293,7 +293,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn clear(&mut self) {
         self.inner.clear()
     }
-    
+
     /// Returns the number of stored values
     ///
     /// # Examples
@@ -315,7 +315,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn len(&self) -> usize {
         self.inner.len()
     }
-    
+
     /// Returns `true` if no values are stored in the slab
     ///
     /// # Examples
@@ -364,13 +364,13 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     /// assert_eq!(iterator.next(), None);
     /// # }
     /// ```
-    pub fn iter(&self) -> Iter<K,V> {
+    pub fn iter(&self) -> Iter<K, V> {
         Iter {
             inner: self.inner.iter(),
             _pd: Default::default(),
         }
     }
-    
+
     /// Returns an iterator that allows modifying each value.
     ///
     /// This function should generally be **avoided** as it is not efficient.
@@ -400,13 +400,13 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     /// assert_eq!(slab[key2], 1);
     /// # }
     /// ```
-    pub fn iter_mut(&mut self) -> IterMut<K,V> {
+    pub fn iter_mut(&mut self) -> IterMut<K, V> {
         IterMut {
             inner: self.inner.iter_mut(),
             _pd: Default::default(),
         }
     }
-    
+
     /// Returns a reference to the value associated with the given key
     ///
     /// If the given key is not associated with a value, then `None` is
@@ -429,7 +429,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn get(&self, key: K) -> Option<&V> {
         self.inner.get(key.into())
     }
-    
+
     /// Returns a mutable reference to the value associated with the given key
     ///
     /// If the given key is not associated with a value, then `None` is
@@ -454,7 +454,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn get_mut(&mut self, key: K) -> Option<&mut V> {
         self.inner.get_mut(key.into())
     }
-    
+
     /// Returns a reference to the value associated with the given key without
     /// performing bounds checking.
     ///
@@ -478,7 +478,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub unsafe fn get_unchecked(&self, key: K) -> &V {
         self.inner.get_unchecked(key.into())
     }
-    
+
     /// Returns a mutable reference to the value associated with the given key
     /// without performing bounds checking.
     ///
@@ -505,7 +505,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub unsafe fn get_unchecked_mut(&mut self, key: K) -> &mut V {
         self.inner.get_unchecked_mut(key.into())
     }
-    
+
     /// Insert a value in the slab, returning key assigned to the value
     ///
     /// The returned key can later be used to retrieve or remove the value using indexed
@@ -531,7 +531,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn insert(&mut self, val: V) -> K {
         From::from(self.inner.insert(val))
     }
-    
+
     /// Returns a handle to a vacant entry allowing for further manipulation.
     ///
     /// This function is useful when creating values that must contain their
@@ -559,13 +559,13 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     /// assert_eq!("hello", slab[hello].1);
     /// # }
     /// ```
-    pub fn vacant_entry(&mut self) -> VacantEntry<K,V> {
+    pub fn vacant_entry(&mut self) -> VacantEntry<K, V> {
         VacantEntry {
             inner: self.inner.vacant_entry(),
             _pd: Default::default(),
         }
-    } 
-    
+    }
+
     /// Removes and returns the value associated with the given key.
     ///
     /// The key is then released and may be associated with future stored
@@ -593,7 +593,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn remove(&mut self, key: K) -> V {
         self.inner.remove(key.into())
     }
-    
+
     /// Removes and returns the value associated with the given key, if it exists.
     ///
     /// The key is then released and may be associated with future stored
@@ -622,7 +622,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
             None
         }
     }
-    
+
     /// Returns `true` if a value is associated with the given key.
     ///
     /// # Examples
@@ -645,7 +645,7 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     pub fn contains(&self, key: K) -> bool {
         self.inner.contains(key.into())
     }
-    
+
     /// Retain only the elements specified by the predicate.
     ///
     /// In other words, remove all elements `e` such that `f(usize, &mut e)`
@@ -674,9 +674,11 @@ impl<K: Into<usize> + From<usize>, V> Slab<K,V> {
     /// assert_eq!(2, slab.len());
     /// # }
     /// ```
-    pub fn retain<F>(&mut self, mut f: F) where
-            F: FnMut(K, &mut V) -> bool {
-        self.inner.retain(|k,v| f(From::from(k),v))
+    pub fn retain<F>(&mut self, mut f: F)
+    where
+        F: FnMut(K, &mut V) -> bool,
+    {
+        self.inner.retain(|k, v| f(From::from(k), v))
     }
 }
 
@@ -690,11 +692,11 @@ impl<'a, K: Into<usize> + From<usize>, V> Iterator for Iter<'a, K, V> {
     type Item = (K, &'a V);
 
     fn next(&mut self) -> Option<(K, &'a V)> {
-        self.inner.next().map(|(k,v)|(From::from(k),v))
+        self.inner.next().map(|(k, v)| (From::from(k), v))
     }
 }
 
-impl<'a, K: Into<usize> + From<usize>, V> IntoIterator for &'a Slab<K,V> {
+impl<'a, K: Into<usize> + From<usize>, V> IntoIterator for &'a Slab<K, V> {
     type Item = (K, &'a V);
     type IntoIter = Iter<'a, K, V>;
     fn into_iter(self) -> Iter<'a, K, V> {
@@ -705,8 +707,6 @@ impl<'a, K: Into<usize> + From<usize>, V> IntoIterator for &'a Slab<K,V> {
     }
 }
 
-
-
 /// A mutable iterator over the values stored in the `Slab`
 pub struct IterMut<'a, K: Into<usize> + From<usize>, V: 'a> {
     inner: slab::IterMut<'a, V>,
@@ -716,10 +716,9 @@ impl<'a, K: Into<usize> + From<usize>, V: 'a> Iterator for IterMut<'a, K, V> {
     type Item = (K, &'a mut V);
 
     fn next<'b>(&'b mut self) -> Option<(K, &'a mut V)> {
-        self.inner.next().map(|(k,v)|(From::from(k),v))
+        self.inner.next().map(|(k, v)| (From::from(k), v))
     }
 }
-
 
 impl<'a, K: Into<usize> + From<usize>, V: 'a> IntoIterator for &'a mut Slab<K, V> {
     type Item = (K, &'a mut V);
@@ -764,8 +763,8 @@ pub struct VacantEntry<'a, K: Into<usize> + From<usize>, V: 'a> {
     _pd: PhantomData<K>,
 }
 
-impl<'a, K: Into<usize> + From<usize>, V : 'a>  VacantEntry<'a, K, V> {
-        /// Insert a value in the entry, returning a mutable reference to the value.
+impl<'a, K: Into<usize> + From<usize>, V: 'a> VacantEntry<'a, K, V> {
+    /// Insert a value in the entry, returning a mutable reference to the value.
     ///
     /// To get the key associated with the value, use `key` prior to calling
     /// `insert`.
@@ -794,7 +793,7 @@ impl<'a, K: Into<usize> + From<usize>, V : 'a>  VacantEntry<'a, K, V> {
     pub fn insert(self, val: V) -> &'a mut V {
         self.inner.insert(val)
     }
-    
+
     /// Return the key associated with this entry.
     ///
     /// A value stored in this entry will be associated with this key.
@@ -825,65 +824,68 @@ impl<'a, K: Into<usize> + From<usize>, V : 'a>  VacantEntry<'a, K, V> {
     }
 }
 
-
-impl<K:Into<usize> + From<usize>, V: fmt::Debug> fmt::Debug for Slab<K,V> {
+impl<K: Into<usize> + From<usize>, V: fmt::Debug> fmt::Debug for Slab<K, V> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.inner.fmt(f)
     }
 }
 
-
-impl<V,K:Into<usize> + From<usize>> Index<K> for Slab<K,V> {
+impl<V, K: Into<usize> + From<usize>> Index<K> for Slab<K, V> {
     type Output = V;
     #[inline]
     fn index(&self, i: K) -> &V {
         self.inner.index(i.into())
     }
 }
-impl<'a,K:Copy + Into<usize> + From<usize>, V> Index<&'a K> for Slab<K,V> {
+impl<'a, K: Copy + Into<usize> + From<usize>, V> Index<&'a K> for Slab<K, V> {
     type Output = V;
     fn index(&self, i: &K) -> &V {
-        let idx : usize = (*i).into();
+        let idx: usize = (*i).into();
         self.inner.index(idx)
     }
 }
-impl<K:Into<usize> + From<usize>,V> IndexMut<K> for Slab<K,V> {
+impl<K: Into<usize> + From<usize>, V> IndexMut<K> for Slab<K, V> {
     fn index_mut(&mut self, i: K) -> &mut V {
         self.inner.index_mut(i.into())
     }
 }
-impl<'a,K:Copy + Into<usize> + From<usize>, V> IndexMut<&'a K> for Slab<K,V> {
+impl<'a, K: Copy + Into<usize> + From<usize>, V> IndexMut<&'a K> for Slab<K, V> {
     fn index_mut(&mut self, i: &K) -> &mut V {
-        let idx : usize = (*i).into();
+        let idx: usize = (*i).into();
         self.inner.index_mut(idx)
     }
 }
 
-impl<K:Into<usize> + From<usize>, V> Slab<K,V> {
+impl<K: Into<usize> + From<usize>, V> Default for Slab<K, V> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<K: Into<usize> + From<usize>, V> Slab<K, V> {
     /// Extract underlying unwrapped map
     pub fn into_unwrapped(self) -> slab::Slab<V> {
         self.inner
     }
-    
+
     /// Wrap the slab. You are responsible that it is one with correct keys.
     pub fn from_unwrapped(s: slab::Slab<V>) -> Self {
         Slab {
-            inner : s,
-            _pd : Default::default(),
+            inner: s,
+            _pd: Default::default(),
         }
     }
-    
+
     /// Temporarily use the map without the safety wrapper
     pub fn unwrapped(&self) -> &slab::Slab<V> {
         &self.inner
     }
-    
+
     /// Temporarily use the map without the safety wrapper
     pub fn unwrapped_mut(&mut self) -> &mut slab::Slab<V> {
         &mut self.inner
     }
 }
-
 
 /// Create usize-equivalent struct that implements `From<usize>` and `Into<usize>`
 ///
